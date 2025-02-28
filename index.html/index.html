@@ -40,12 +40,15 @@
 
         function getChatResponse(input) {
             input = input.toLowerCase();
-            if (input.includes("hola")) {
-                return "¡Hola! ¿Cómo te sientes hoy?";
+            if (input.includes("hola") || input.includes("hey") || input.includes("oe")) {
+                let greetings = ["¡Hola! ¿Cómo te sientes hoy?", "Hey, ¿cómo va todo?", "Oe, ¿qué tal te encuentras?"];
+                return greetings[Math.floor(Math.random() * greetings.length)];
             } else if (input.includes("triste") || input.includes("deprimido")) {
-                return "Lamento escuchar eso. Hablar sobre tus sentimientos puede ayudar. ¿Quieres contarme más?";
+                let responses = ["Lamento escuchar eso. Hablar sobre tus sentimientos puede ayudar. ¿Quieres contarme más?", "Estoy aquí para escucharte. ¿Quieres compartir lo que sientes?", "A veces, expresar lo que sientes puede ser un gran alivio. Cuéntame."];
+                return responses[Math.floor(Math.random() * responses.length)];
             } else if (input.includes("ansioso") || input.includes("estresado")) {
-                return "Entiendo. La respiración profunda y la meditación pueden ser útiles. ¿Te gustaría alguna recomendación?";
+                let responses = ["Entiendo. La respiración profunda y la meditación pueden ser útiles. ¿Te gustaría alguna recomendación?", "Respirar lentamente puede ayudar. ¿Te gustaría que te enseñe una técnica?", "El estrés es difícil de manejar, pero hay formas de reducirlo. ¿Te cuento algunas?"];
+                return responses[Math.floor(Math.random() * responses.length)];
             } else if (input.includes("feliz") || input.includes("bien")) {
                 return "¡Me alegra saberlo! Si necesitas hablar de algo, aquí estaré.";
             } else if (input.includes("cansado") || input.includes("agotado")) {
@@ -92,4 +95,3 @@
     </div>
 </body>
 </html>
-
