@@ -1,9 +1,12 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AGOT - Comunidad de Salud Mental</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; background-color: #2c2c2c; color: #ccc; }
         header { background: #0d0d0d; color: white; padding: 40px; text-align: center; font-size: 36px; font-weight: bold; letter-spacing: 2px; }
@@ -12,21 +15,38 @@
         nav a:hover { background: #444; border-radius: 5px; }
         .container { max-width: 900px; margin: 20px auto; padding: 20px; }
         section { padding: 20px; display: none; background: #1a1a1a; border-radius: 10px; box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1); color: #ccc; }
-        .chat-box { border: 2px solid #444; padding: 15px; height: 300px; overflow-y: auto; background: #222; border-radius: 10px; color: #ccc; }
-        .message-input { width: calc(100% - 90px); padding: 10px; margin-top: 10px; background: #333; color: white; border: 1px solid #555; }
-        .send-btn { padding: 10px; background: #444; color: white; border: none; cursor: pointer; }
-        .post-container, .auth-container { margin-top: 20px; }
-        .post-box, .auth-input { width: calc(100% - 90px); padding: 10px; background: #333; color: white; border: 1px solid #555; }
-        .post-btn, .auth-btn { padding: 10px; background: #444; color: white; border: none; cursor: pointer; }
-        .posts { margin-top: 20px; }
-        .post { background: #222; padding: 10px; margin-top: 10px; border-radius: 5px; }
+        .auth-btn { padding: 10px; background: #444; color: white; border: none; cursor: pointer; }
     </style>
     <script>
-        function showSection(sectionId) {
-            document.querySelectorAll("section").forEach(section => section.style.display = "none");
-            document.getElementById(sectionId).style.display = "block";
+        const firebaseConfig = {
+            apiKey: "AIzaSyDR5HD-NtN5a6XUAG3qBQZyR4pOCdUNx3o",
+            authDomain: "agot-d7b7e.firebaseapp.com",
+            projectId: "agot-d7b7e",
+            storageBucket: "agot-d7b7e.appspot.com",
+            messagingSenderId: "800481570212",
+            appId: "1:800481570212:web:ec3907478bb2b2136de531",
+            measurementId: "G-YXKP1X8RJ5"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        function googleLogin() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).then(result => {
+                localStorage.setItem("user", result.user.displayName);
+                checkAuth();
+            }).catch(error => {
+                console.error(error);
+            });
         }
-        window.onload = function() { showSection('sobre-mi'); loadPosts(); checkAuth(); };
+
+        function logout() {
+            auth.signOut().then(() => {
+                localStorage.removeItem("user");
+                checkAuth();
+            });
+        }
 
         function checkAuth() {
             let user = localStorage.getItem("user");
@@ -39,50 +59,7 @@
             }
         }
 
-        function register() {
-            let username = document.getElementById("username").value.trim();
-            if (username) {
-                localStorage.setItem("user", username);
-                checkAuth();
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem("user");
-            checkAuth();
-        }
-
-        function addPost() {
-            let postInput = document.getElementById("postInput");
-            let postText = postInput.value.trim();
-            let user = localStorage.getItem("user");
-            if (postText === "" || !user) return;
-            let postsContainer = document.getElementById("posts");
-            let newPost = document.createElement("div");
-            newPost.classList.add("post");
-            newPost.innerHTML = `<p><strong>${user}:</strong> ${postText}</p>`;
-            postsContainer.prepend(newPost);
-            savePost(`${user}: ${postText}`);
-            postInput.value = "";
-        }
-
-        function savePost(text) {
-            let savedPosts = JSON.parse(localStorage.getItem("communityPosts")) || [];
-            savedPosts.unshift(text);
-            localStorage.setItem("communityPosts", JSON.stringify(savedPosts));
-        }
-
-        function loadPosts() {
-            let savedPosts = JSON.parse(localStorage.getItem("communityPosts")) || [];
-            let postsContainer = document.getElementById("posts");
-            postsContainer.innerHTML = "";
-            savedPosts.forEach(text => {
-                let post = document.createElement("div");
-                post.classList.add("post");
-                post.innerHTML = `<p>${text}</p>`;
-                postsContainer.appendChild(post);
-            });
-        }
+        window.onload = function() { checkAuth(); };
     </script>
 </head>
 <body>
@@ -94,27 +71,15 @@
         <a onclick="showSection('chat')">Chat de Apoyo</a>
     </nav>
     <div class="container">
-        <section id="sobre-mi">
-            <h2>Sobre Mí</h2>
-            <p>Aquí puedes leer sobre mi experiencia y mi historia.</p>
-        </section>
-        <section id="blog">
-            <h2>Blog</h2>
-            <p>Aquí encontrarás artículos sobre salud mental y bienestar.</p>
-        </section>
         <section id="comunidad">
             <h2>Comunidad</h2>
             <p>Únete a la comunidad para compartir experiencias y apoyarnos mutuamente.</p>
             <div id="auth-container" class="auth-container">
-                <input type="text" id="username" class="auth-input" placeholder="Ingresa tu nombre">
-                <button onclick="register()" class="auth-btn">Registrarse/Iniciar sesión</button>
+                <button onclick="googleLogin()" class="auth-btn">Iniciar sesión con Google</button>
             </div>
             <div id="post-container" class="post-container" style="display:none;">
-                <input type="text" id="postInput" class="post-box" placeholder="Escribe algo...">
-                <button onclick="addPost()" class="post-btn">Publicar</button>
-                <button onclick="logout()" class="post-btn">Cerrar sesión</button>
+                <button onclick="logout()" class="auth-btn">Cerrar sesión</button>
             </div>
-            <div id="posts" class="posts"></div>
         </section>
     </div>
 </body>
