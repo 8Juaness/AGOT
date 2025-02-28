@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -11,7 +10,7 @@
         body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; background-color: #2c2c2c; color: #ccc; }
         header { background: #0d0d0d; color: white; padding: 40px; text-align: center; font-size: 36px; font-weight: bold; letter-spacing: 2px; }
         nav { background: #333; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; }
-        nav a { color: #ccc; text-decoration: none; margin: 15px; font-weight: bold; padding: 10px; transition: 0.3s; }
+        nav a { color: #ccc; text-decoration: none; margin: 15px; font-weight: bold; padding: 10px; transition: 0.3s; cursor: pointer; }
         nav a:hover { background: #444; border-radius: 5px; }
         .container { max-width: 900px; margin: 20px auto; padding: 20px; }
         section { padding: 20px; display: none; background: #1a1a1a; border-radius: 10px; box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1); color: #ccc; }
@@ -59,7 +58,12 @@
             }
         }
 
-        window.onload = function() { checkAuth(); };
+        function showSection(sectionId) {
+            document.querySelectorAll("section").forEach(section => section.style.display = "none");
+            document.getElementById(sectionId).style.display = "block";
+        }
+
+        window.onload = function() { checkAuth(); showSection('sobre-mi'); };
     </script>
 </head>
 <body>
@@ -71,6 +75,14 @@
         <a onclick="showSection('chat')">Chat de Apoyo</a>
     </nav>
     <div class="container">
+        <section id="sobre-mi">
+            <h2>Sobre Mí</h2>
+            <p>Aquí puedes leer sobre mi experiencia y mi historia.</p>
+        </section>
+        <section id="blog">
+            <h2>Blog</h2>
+            <p>Aquí encontrarás artículos sobre salud mental y bienestar.</p>
+        </section>
         <section id="comunidad">
             <h2>Comunidad</h2>
             <p>Únete a la comunidad para compartir experiencias y apoyarnos mutuamente.</p>
@@ -80,6 +92,10 @@
             <div id="post-container" class="post-container" style="display:none;">
                 <button onclick="logout()" class="auth-btn">Cerrar sesión</button>
             </div>
+        </section>
+        <section id="chat">
+            <h2>Chat de Apoyo</h2>
+            <p>Conversa con la comunidad en tiempo real.</p>
         </section>
     </div>
 </body>
