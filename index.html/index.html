@@ -24,11 +24,13 @@
         window.onload = function() { showSection('sobre-mi'); };
 
         function sendMessage() {
-            let input = document.getElementById("chatInput").value;
+            let inputField = document.getElementById("chatInput");
+            let input = inputField.value.trim();
+            if (input === "") return; 
             let chatBox = document.getElementById("chat-box");
             let userMessage = `<p><strong>Tú:</strong> ${input}</p>`;
             chatBox.innerHTML += userMessage;
-            document.getElementById("chatInput").value = "";
+            inputField.value = "";
 
             let response = getChatResponse(input);
             let botMessage = `<p><strong>AGOT:</strong> ${response}</p>`;
