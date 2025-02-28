@@ -15,9 +15,9 @@
         .chat-box { border: 2px solid #444; padding: 15px; height: 300px; overflow-y: auto; background: #222; border-radius: 10px; color: #ccc; }
         .message-input { width: calc(100% - 90px); padding: 10px; margin-top: 10px; background: #333; color: white; border: 1px solid #555; }
         .send-btn { padding: 10px; background: #444; color: white; border: none; cursor: pointer; }
-        .post-container { margin-top: 20px; }
-        .post-box { width: calc(100% - 90px); padding: 10px; background: #333; color: white; border: 1px solid #555; }
-        .post-btn { padding: 10px; background: #444; color: white; border: none; cursor: pointer; }
+        .post-container, .auth-container { margin-top: 20px; }
+        .post-box, .auth-input { width: calc(100% - 90px); padding: 10px; background: #333; color: white; border: 1px solid #555; }
+        .post-btn, .auth-btn { padding: 10px; background: #444; color: white; border: none; cursor: pointer; }
         .posts { margin-top: 20px; }
         .post { background: #222; padding: 10px; margin-top: 10px; border-radius: 5px; }
     </style>
@@ -26,43 +26,43 @@
             document.querySelectorAll("section").forEach(section => section.style.display = "none");
             document.getElementById(sectionId).style.display = "block";
         }
-        window.onload = function() { showSection('sobre-mi'); loadPosts(); };
+        window.onload = function() { showSection('sobre-mi'); loadPosts(); checkAuth(); };
 
-        function sendMessage() {
-            let inputField = document.getElementById("chatInput");
-            let input = inputField.value.trim().toLowerCase();
-            if (input === "") return; 
-            let chatBox = document.getElementById("chat-box");
-            let userMessage = `<p><strong>Tú:</strong> ${inputField.value}</p>`;
-            chatBox.innerHTML += userMessage;
-            inputField.value = "";
-
-            let response = getChatResponse(input);
-            let botMessage = `<p><strong>AGOT:</strong> ${response}</p>`;
-            chatBox.innerHTML += botMessage;
-            chatBox.scrollTop = chatBox.scrollHeight;
+        function checkAuth() {
+            let user = localStorage.getItem("user");
+            if (user) {
+                document.getElementById("auth-container").style.display = "none";
+                document.getElementById("post-container").style.display = "block";
+            } else {
+                document.getElementById("auth-container").style.display = "block";
+                document.getElementById("post-container").style.display = "none";
+            }
         }
 
-        function getChatResponse(input) {
-            input = input.trim().toLowerCase();
-            if (/\b(hola|hey|oe)\b/.test(input)) {
-                let greetings = ["¡Hola! ¿Cómo te sientes hoy?", "Hey, ¿cómo va todo?", "Oe, ¿qué tal te encuentras?"];
-                return greetings[Math.floor(Math.random() * greetings.length)];
-            } else {
-                return "No estoy seguro de cómo responder a eso, pero estoy aquí para escucharte.";
+        function register() {
+            let username = document.getElementById("username").value.trim();
+            if (username) {
+                localStorage.setItem("user", username);
+                checkAuth();
             }
+        }
+
+        function logout() {
+            localStorage.removeItem("user");
+            checkAuth();
         }
 
         function addPost() {
             let postInput = document.getElementById("postInput");
             let postText = postInput.value.trim();
-            if (postText === "") return;
+            let user = localStorage.getItem("user");
+            if (postText === "" || !user) return;
             let postsContainer = document.getElementById("posts");
             let newPost = document.createElement("div");
             newPost.classList.add("post");
-            newPost.innerHTML = `<p>${postText}</p>`;
+            newPost.innerHTML = `<p><strong>${user}:</strong> ${postText}</p>`;
             postsContainer.prepend(newPost);
-            savePost(postText);
+            savePost(`${user}: ${postText}`);
             postInput.value = "";
         }
 
@@ -105,17 +105,16 @@
         <section id="comunidad">
             <h2>Comunidad</h2>
             <p>Únete a la comunidad para compartir experiencias y apoyarnos mutuamente.</p>
-            <div class="post-container">
+            <div id="auth-container" class="auth-container">
+                <input type="text" id="username" class="auth-input" placeholder="Ingresa tu nombre">
+                <button onclick="register()" class="auth-btn">Registrarse/Iniciar sesión</button>
+            </div>
+            <div id="post-container" class="post-container" style="display:none;">
                 <input type="text" id="postInput" class="post-box" placeholder="Escribe algo...">
                 <button onclick="addPost()" class="post-btn">Publicar</button>
+                <button onclick="logout()" class="post-btn">Cerrar sesión</button>
             </div>
             <div id="posts" class="posts"></div>
-        </section>
-        <section id="chat">
-            <h2>Chat de Apoyo</h2>
-            <div class="chat-box" id="chat-box"></div>
-            <input type="text" id="chatInput" class="message-input" placeholder="Escribe un mensaje...">
-            <button onclick="sendMessage()" class="send-btn">Enviar</button>
         </section>
     </div>
 </body>
