@@ -22,6 +22,34 @@
             document.getElementById(sectionId).style.display = "block";
         }
         window.onload = function() { showSection('sobre-mi'); };
+
+        function sendMessage() {
+            let input = document.getElementById("chatInput").value;
+            let chatBox = document.getElementById("chat-box");
+            let userMessage = `<p><strong>Tú:</strong> ${input}</p>`;
+            chatBox.innerHTML += userMessage;
+            document.getElementById("chatInput").value = "";
+
+            let response = getChatResponse(input);
+            let botMessage = `<p><strong>AGOT:</strong> ${response}</p>`;
+            chatBox.innerHTML += botMessage;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function getChatResponse(input) {
+            input = input.toLowerCase();
+            if (input.includes("hola")) {
+                return "¡Hola! ¿Cómo te sientes hoy?";
+            } else if (input.includes("triste") || input.includes("deprimido")) {
+                return "Lamento escuchar eso. Hablar sobre tus sentimientos puede ayudar. ¿Quieres contarme más?";
+            } else if (input.includes("ansioso") || input.includes("estresado")) {
+                return "Entiendo. La respiración profunda y la meditación pueden ser útiles. ¿Te gustaría alguna recomendación?";
+            } else if (input.includes("feliz") || input.includes("bien")) {
+                return "¡Me alegra saberlo! Si necesitas hablar de algo, aquí estaré.";
+            } else {
+                return "No estoy seguro de cómo responder a eso, pero estoy aquí para escucharte.";
+            }
+        }
     </script>
 </head>
 <body>
