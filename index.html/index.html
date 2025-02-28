@@ -15,20 +15,25 @@
         .chat-box { border: 2px solid #444; padding: 15px; height: 300px; overflow-y: auto; background: #222; border-radius: 10px; color: #ccc; }
         .message-input { width: calc(100% - 90px); padding: 10px; margin-top: 10px; background: #333; color: white; border: 1px solid #555; }
         .send-btn { padding: 10px; background: #444; color: white; border: none; cursor: pointer; }
+        .post-container { margin-top: 20px; }
+        .post-box { width: calc(100% - 90px); padding: 10px; background: #333; color: white; border: 1px solid #555; }
+        .post-btn { padding: 10px; background: #444; color: white; border: none; cursor: pointer; }
+        .posts { margin-top: 20px; }
+        .post { background: #222; padding: 10px; margin-top: 10px; border-radius: 5px; }
     </style>
     <script>
         function showSection(sectionId) {
             document.querySelectorAll("section").forEach(section => section.style.display = "none");
             document.getElementById(sectionId).style.display = "block";
         }
-        window.onload = function() { showSection('sobre-mi'); };
+        window.onload = function() { showSection('sobre-mi'); loadPosts(); };
 
         function sendMessage() {
             let inputField = document.getElementById("chatInput");
-            let input = inputField.value.trim();
+            let input = inputField.value.trim().toLowerCase();
             if (input === "") return; 
             let chatBox = document.getElementById("chat-box");
-            let userMessage = `<p><strong>Tú:</strong> ${input}</p>`;
+            let userMessage = `<p><strong>Tú:</strong> ${inputField.value}</p>`;
             chatBox.innerHTML += userMessage;
             inputField.value = "";
 
@@ -39,29 +44,44 @@
         }
 
         function getChatResponse(input) {
-            input = input.toLowerCase();
-            if (input.includes("hola") || input.includes("hey") || input.includes("oe")) {
+            input = input.trim().toLowerCase();
+            if (/\b(hola|hey|oe)\b/.test(input)) {
                 let greetings = ["¡Hola! ¿Cómo te sientes hoy?", "Hey, ¿cómo va todo?", "Oe, ¿qué tal te encuentras?"];
                 return greetings[Math.floor(Math.random() * greetings.length)];
-            } else if (input.includes("triste") || input.includes("deprimido")) {
-                let responses = ["Lamento escuchar eso. Hablar sobre tus sentimientos puede ayudar. ¿Quieres contarme más?", "Estoy aquí para escucharte. ¿Quieres compartir lo que sientes?", "A veces, expresar lo que sientes puede ser un gran alivio. Cuéntame."];
-                return responses[Math.floor(Math.random() * responses.length)];
-            } else if (input.includes("ansioso") || input.includes("estresado")) {
-                let responses = ["Entiendo. La respiración profunda y la meditación pueden ser útiles. ¿Te gustaría alguna recomendación?", "Respirar lentamente puede ayudar. ¿Te gustaría que te enseñe una técnica?", "El estrés es difícil de manejar, pero hay formas de reducirlo. ¿Te cuento algunas?"];
-                return responses[Math.floor(Math.random() * responses.length)];
-            } else if (input.includes("feliz") || input.includes("bien")) {
-                return "¡Me alegra saberlo! Si necesitas hablar de algo, aquí estaré.";
-            } else if (input.includes("cansado") || input.includes("agotado")) {
-                return "Descansar es importante. ¿Has intentado tomar pausas o mejorar tu rutina de sueño?";
-            } else if (input.includes("solo") || input.includes("nadie me entiende")) {
-                return "No estás solo. Siempre hay personas dispuestas a escucharte y apoyarte.";
-            } else if (input.includes("miedo") || input.includes("preocupado")) {
-                return "Es normal sentir miedo a veces. ¿Quieres hablar sobre lo que te preocupa?";
-            } else if (input.includes("gracias")) {
-                return "¡De nada! Estoy aquí para ayudarte.";
             } else {
                 return "No estoy seguro de cómo responder a eso, pero estoy aquí para escucharte.";
             }
+        }
+
+        function addPost() {
+            let postInput = document.getElementById("postInput");
+            let postText = postInput.value.trim();
+            if (postText === "") return;
+            let postsContainer = document.getElementById("posts");
+            let newPost = document.createElement("div");
+            newPost.classList.add("post");
+            newPost.innerHTML = `<p>${postText}</p>`;
+            postsContainer.prepend(newPost);
+            savePost(postText);
+            postInput.value = "";
+        }
+
+        function savePost(text) {
+            let savedPosts = JSON.parse(localStorage.getItem("communityPosts")) || [];
+            savedPosts.unshift(text);
+            localStorage.setItem("communityPosts", JSON.stringify(savedPosts));
+        }
+
+        function loadPosts() {
+            let savedPosts = JSON.parse(localStorage.getItem("communityPosts")) || [];
+            let postsContainer = document.getElementById("posts");
+            postsContainer.innerHTML = "";
+            savedPosts.forEach(text => {
+                let post = document.createElement("div");
+                post.classList.add("post");
+                post.innerHTML = `<p>${text}</p>`;
+                postsContainer.appendChild(post);
+            });
         }
     </script>
 </head>
@@ -85,6 +105,11 @@
         <section id="comunidad">
             <h2>Comunidad</h2>
             <p>Únete a la comunidad para compartir experiencias y apoyarnos mutuamente.</p>
+            <div class="post-container">
+                <input type="text" id="postInput" class="post-box" placeholder="Escribe algo...">
+                <button onclick="addPost()" class="post-btn">Publicar</button>
+            </div>
+            <div id="posts" class="posts"></div>
         </section>
         <section id="chat">
             <h2>Chat de Apoyo</h2>
@@ -95,3 +120,4 @@
     </div>
 </body>
 </html>
+
