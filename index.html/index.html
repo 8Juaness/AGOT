@@ -1,0 +1,61 @@
+<html>
+<head>
+    <title>AGOT - Comunidad de Salud Mental</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        header { background: #4CAF50; color: white; padding: 15px; text-align: center; }
+        nav { background: #333; padding: 10px; text-align: center; }
+        nav a { color: white; text-decoration: none; margin: 10px; cursor: pointer; }
+        section { padding: 20px; display: none; }
+        .chat-box { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; background: white; }
+        .message-input { width: 80%; padding: 10px; }
+        .send-btn { padding: 10px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+    </style>
+    <script>
+        function showSection(sectionId) {
+            let sections = document.querySelectorAll("section");
+            sections.forEach(section => section.style.display = "none");
+            document.getElementById(sectionId).style.display = "block";
+        }
+        
+        window.onload = function() {
+            showSection('sobre-mi');
+        };
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Bienvenido a AGOT - Comunidad de Salud Mental</h1>
+    </header>
+    <nav>
+        <a onclick="showSection('sobre-mi')">Sobre Mí</a>
+        <a onclick="showSection('blog')">Blog</a>
+        <a onclick="showSection('comunidad')">Comunidad</a>
+        <a onclick="showSection('chat')">Chat de Apoyo</a>
+    </nav>
+    
+    <section id="sobre-mi">
+        <h2>Sobre Mí</h2>
+        <p>Aquí puedes leer sobre mi experiencia y mi historia.</p>
+    </section>
+    
+    <section id="blog">
+        <h2>Blog</h2>
+        <p>Aquí encontrarás artículos sobre salud mental y bienestar.</p>
+    </section>
+    
+    <section id="comunidad">
+        <h2>Comunidad</h2>
+        <p>Únete a la comunidad para compartir experiencias y apoyarnos mutuamente.</p>
+    </section>
+    
+    <section id="chat">
+        <h2>Chat de Apoyo</h2>
+        <div class="chat-box" id="chat-box"></div>
+        <input type="text" id="chatInput" class="message-input" placeholder="Escribe un mensaje...">
+        <button onclick="sendMessage()" class="send-btn">Enviar</button>
+    </section>
+</body>
+</html>
