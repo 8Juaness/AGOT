@@ -48,6 +48,14 @@
                 return "Entiendo. La respiración profunda y la meditación pueden ser útiles. ¿Te gustaría alguna recomendación?";
             } else if (input.includes("feliz") || input.includes("bien")) {
                 return "¡Me alegra saberlo! Si necesitas hablar de algo, aquí estaré.";
+            } else if (input.includes("cansado") || input.includes("agotado")) {
+                return "Descansar es importante. ¿Has intentado tomar pausas o mejorar tu rutina de sueño?";
+            } else if (input.includes("solo") || input.includes("nadie me entiende")) {
+                return "No estás solo. Siempre hay personas dispuestas a escucharte y apoyarte.";
+            } else if (input.includes("miedo") || input.includes("preocupado")) {
+                return "Es normal sentir miedo a veces. ¿Quieres hablar sobre lo que te preocupa?";
+            } else if (input.includes("gracias")) {
+                return "¡De nada! Estoy aquí para ayudarte.";
             } else {
                 return "No estoy seguro de cómo responder a eso, pero estoy aquí para escucharte.";
             }
